@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="zTree_v3/css/demo.css" type="text/css">
+    <link rel="stylesheet" href="zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <script type="text/javascript" src="zTree_v3/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="zTree_v3/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="zTree_v3/js/jquery.ztree.excheck.js"></script>
+    <link rel="stylesheet" href="./css/x-admin.css" media="all">
+    <script src="./lib/layui/layui.js" charset="utf-8">
+    </script>
+    <script src="./js/x-layui.js" charset="utf-8">
+    </script>
+    <script src="js/common/myAjax.js"></script>
+
+
+</head>
+<body>
+<div style="display: flex;flex-direction: column;justify-content: center">
+    <div class="zTreeDemoBackground left">
+        <ul id="treeDemo" class="ztree"></ul>
+    </div>
+    <div style=" margin-top: 20px;margin-left: 50px">
+        <div class="layui-form-item">
+            <div  class="layui-btn" lay-filter="save" onclick="submitAuthentication()" lay-submit="">
+                提交
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    layui.use(['form', 'layer', 'jquery'], function () {
+        $ = layui.jquery;
+        form = layui.form()
+            , layer = layui.layer;
+
+    });
+    
+
+
+    function submitAuthentication() {
+        let data = []
+        // let zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        let zTree = treeObj;
+        let checkedNodes = zTree.getCheckedNodes(true);
+        for (let i = 0; i < checkedNodes.length; i++) {
+            if (!checkedNodes[i].isParent) {
+                let tempdata = {"id":checkedNodes[i].id}
+                data.push(tempdata)
+            }
+        }
+        layer.alert("确认权限选择？", {icon: 6}, function () {
+            let elementById = parent.document.getElementById("authenticationIds");
+            elementById.value = JSON.stringify(data)
+            // 获得frame索引
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        });
+    }
+
+
+    var setting = {
+        view: {
+            selectedMulti: false
+        },
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            beforeCheck: beforeCheck,
+            onCheck: onCheck
+        }
+    };
+
+    // var zNodes =[
+    //     { id:1, pId:0, name:"随意勾选 1", open:true},
+    //     { id:11, pId:1, name:"随意勾选 1-1"},
+    //     { id:12, pId:1, name:"随意勾选 1-2", open:true},
+    //     { id:121, pId:12, name:"随意勾选 1-2-1"},
+    //     { id:122, pId:12, name:"随意勾选 1-2-2"},
+    //     { id:2, pId:0, name:"禁止勾选 2", open:true, doCheck:false},
+    //     { id:21, pId:2, name:"禁止勾选 2-1", doCheck:false},
+    //     { id:22, pId:2, name:"禁止勾选 2-2", checked:true, open:true, doCheck:false},
+    //     { id:221, pId:22, name:"禁止勾选 2-2-1", doCheck:false},
+    //     { id:222, pId:22, name:"禁止勾选 2-2-2", checked:true, doCheck:false},
+    //     { id:23, pId:2, name:"禁止勾选 2-3", doCheck:false}
+    // ];
+
+    var code, log, className = "dark";
+
+    function beforeCheck(treeId, treeNode) {
+        className = (className === "dark" ? "" : "dark");
+        showLog("[ " + getTime() + " beforeCheck ]&nbsp;&nbsp;&nbsp;&nbsp;" + treeNode.name);
+        return (treeNode.doCheck !== false);
+    }
+
+    function onCheck(e, treeId, treeNode) {
+        showLog("[ " + getTime() + " onCheck ]&nbsp;&nbsp;&nbsp;&nbsp;" + treeNode.name);
+    }
+
+    function showLog(str) {
+        if (!log) log = $("#log");
+        log.append("<li class='" + className + "'>" + str + "</li>");
+        if (log.children("li").length > 6) {
+            log.get(0).removeChild(log.children("li")[0]);
+        }
+    }
+
+
+    function getTime() {
+        var now = new Date(),
+            h = now.getHours(),
+            m = now.getMinutes(),
+            s = now.getSeconds(),
+            ms = now.getMilliseconds();
+        return (h + ":" + m + ":" + s + " " + ms);
+    }
+
+    window.onload = function () {
+        let id = ""
+        let param = window.location.search;
+        id = param.substring(param.lastIndexOf("=") + 1)
+
+        let allResult = myajax("/permission/findAllPermissions", "get", "application/json;charset=utf-8", "json");
+        let myResult = [];
+        if (id != null && id != "") {
+            myResult = myajax("/permission/findPermissionByRoleId/"+id,"get","application/json;charset=utf-8","json");
+        }
+
+
+        console.log(allResult,"所有权限")
+        console.log(myResult,"我的权限")
+
+        let zNodes = [];
+        for (let i = 0; i < allResult.length; i++) {
+            let tempdata = {id:allResult[i].id,pId:allResult[i].pid,name:allResult[i].name};
+            for (let j = 0 ;j<myResult.length;j++){
+                if (myResult[j].id == allResult[i].id){
+                    tempdata = {id:allResult[i].id,pId:allResult[i].pid,name:allResult[i].name,checked:true}
+                }
+            }
+            zNodes.push(tempdata)
+        }
+
+        console.log(zNodes)
+        treeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    }
+    var treeObj
+
+</script>
+</html>

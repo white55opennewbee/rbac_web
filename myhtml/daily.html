@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>
+        X-admin v1.0
+    </title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="./css/x-admin.css" media="all">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/common/myAjax.js"></script>
+
+    <script src="js/wangEditor.min.js"></script>
+    <script src="js/common/wangEditor.js"></script>
+
+</head>
+
+<body>
+<div style="display: flex;flex-direction: column;justify-content: center;align-items: center">
+    <div style="display: flex;flex-direction: row;margin-top: 10px">
+        <div>标题:</div>
+        <div><input id="dailyTitle" type="text" style="width: 600px"></div>
+    </div>
+    <div style="display: flex;flex-direction: row;margin-top: 10px">
+        <div>内容:</div>
+        <div id="wangEditor">
+
+        </div>
+    </div>
+    <div style="margin-top: 10px">
+        <div class="layui-btn" lay-filter="save" lay-submit="">
+            保存草稿
+        </div>
+        <div class="layui-btn" onclick="saveAndPut()">
+            保存且提交
+        </div>
+    </div>
+</div>
+<script src="./lib/layui/layui.js" charset="utf-8">
+</script>
+<script src="./js/x-layui.js" charset="utf-8">
+</script>
+<script>
+
+    let dailyId;
+
+    window.onload = function(){
+        createEditor()
+        init()
+    }
+
+
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        form = layui.form()
+            , layer = layui.layer;
+
+
+        //监听提交
+        form.on('submit(save)', function (data) {
+            console.log(data);
+            let dailyTitle = $("#dailyTitle").val()
+            let dailyBody = editor.txt.html()
+
+
+            let commitdata = {
+                dailyTitle:dailyTitle,
+                dailyBody:dailyBody,
+                id:dailyId
+            }
+
+
+            console.log(commitdata)
+            let result = myajax("/daily/updateDaily", "post", "application/json;charset=utf-8", "json", JSON.stringify(commitdata));
+            console.log(result);
+            if (result) {
+                layer.alert("保存成功", {icon: 6}, function () {
+                    // 获得frame索引
+                    var index = parent.layer.getFrameIndex(window.name);
+                    //关闭当前frame
+                    parent.layer.close(index);
+                });
+            } else {
+                layer.alert("保存失败", {icon: 6}, function () {
+                    // 获得frame索引
+                    var index = parent.layer.getFrameIndex(window.name);
+                    //关闭当前frame
+                    parent.layer.close(index);
+                });
+            }
+
+            return false;
+        });
+    });
+
+
+    function saveAndPut() {
+        let dailyTitle = $("#dailyTitle").val()
+        let dailyBody = editor.txt.html()
+
+
+        let commitdata = {
+            dailyTitle:dailyTitle,
+            dailyBody:dailyBody,
+            id:dailyId
+        }
+        let result = myajax("/daily/updateDaily/put", "post", "application/json;charset=utf-8", "json", JSON.stringify(commitdata));
+        if (result) {
+            layer.alert("提交成功", {icon: 6}, function () {
+                // 获得frame索引
+                var index = parent.layer.getFrameIndex(window.name);
+                //关闭当前frame
+                parent.layer.close(index);
+            });
+        } else {
+            layer.alert("提交失败", {icon: 6}, function () {
+                // 获得frame索引
+                var index = parent.layer.getFrameIndex(window.name);
+                //关闭当前frame
+                parent.layer.close(index);
+            });
+        }
+    }
+
+
+    function init() {
+        let param = window.location.search;
+        let id = param.substring(param.lastIndexOf("=") + 1)
+        dailyId = id
+        let daily = myajax("/daily/findDailyByDailyId/"+dailyId, "get", "application/json;charset=utf-8", "json")
+        $("#dailyTitle").val(daily.dailyTitle)
+        editor.txt.html(daily.dailyBody)
+    }
+
+    // $("#roles").val()
+</script>
+
+</body>
+
+</html>
