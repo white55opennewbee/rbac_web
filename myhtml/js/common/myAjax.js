@@ -66,6 +66,7 @@ function MyloginAjax(url, method, contenttype, datatype, data) {
                 localStorage.setItem("rbac_sys_tokenHeader", data.data.tokenHeader)
                 localStorage.setItem("rbac_sys_tokenHead", data.data.tokenHead)
                 localStorage.setItem("rbac_sys_username",data.data.username)
+                localStorage.setItem("rbac_sys_id",data.data.id)
                 window.location.href = "index.html"
 
             }else if (data.code == 401) {

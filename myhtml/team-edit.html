@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>
+    X-admin v1.0
+  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="./css/x-admin.css" media="all">
+
+  <script src="js/common/myAjax.js"></script>
+  <script src="js/jquery.min.js"></script>
+
+</head>
+
+<body>
+<div class="x-body">
+  <form class="layui-form">
+    <div class="layui-form-item">
+      <label for="teamName" class="layui-form-label">
+        <span class="x-red">*</span>组名
+      </label>
+      <div class="layui-input-inline">
+        <input type="text" id="teamName" name="teamName" required="" lay-verify="teamName"
+               autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">
+        <span class="x-red">*</span>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="level"  class="layui-form-label">
+        <span class="x-red">*</span>小组级别
+      </label>
+      <div class="layui-input-inline">
+        <input type="text" id="level" name="level" required="" lay-verify="level"
+               autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">
+        <span class="x-red">*</span>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="type" class="layui-form-label">
+        <span class="x-red">*</span>小组类型
+      </label>
+      <div class="layui-input-inline">
+        <input type="text" id="type" name="type" required="" lay-verify="type"
+               autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">
+        <span class="x-red">*</span>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="classroom"  class="layui-form-label">
+        <span class="x-red">*</span>小组教室
+      </label>
+      <div class="layui-input-inline">
+        <input type="text" id="classroom" name="classroom" required="" lay-verify="classroom"
+               autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux">
+        <span class="x-red">*</span>
+      </div>
+    </div>
+<!--    <div class="layui-form-item">-->
+<!--      <label for="coach" class="layui-form-label">-->
+<!--        <span class="x-red">*</span>教练-->
+<!--      </label>-->
+<!--      <div class="layui-input-inline">-->
+<!--        <select id="coach" name="coach">-->
+
+<!--        </select>-->
+<!--&lt;!&ndash;        <input type="text" id="coach" name="coach" required="" lay-verify="coach"&ndash;&gt;-->
+<!--&lt;!&ndash;               autocomplete="off" class="layui-input">&ndash;&gt;-->
+<!--      </div>-->
+<!--      <div class="layui-form-mid layui-word-aux">-->
+<!--        <span class="x-red">*</span>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <div class="layui-form-item">
+      <label class="layui-form-label" style="width:60px">教练</label>
+      <div class="layui-input-inline" style="width:120px;text-align: left">
+        <select id="coach" name="fid">
+<!--          <option value="0">顶级分类</option>-->
+<!--          <option value="新闻">新闻</option>-->
+<!--          <option value="新闻子类1">&#45;&#45;新闻子类1</option>-->
+<!--          <option value="新闻子类2">&#45;&#45;新闻子类2</option>-->
+<!--          <option value="产品">产品</option>-->
+<!--          <option value="产品子类1">&#45;&#45;产品子类1</option>-->
+<!--          <option value="产品子类2">&#45;&#45;产品子类2</option>-->
+        </select>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+      <button class="layui-btn" lay-filter="save" lay-submit="">
+        保存
+      </button>
+    </div>
+  </form>
+</div>
+<script src="./lib/layui/layui.js" charset="utf-8">
+</script>
+<script src="./js/x-layui.js" charset="utf-8">
+</script>
+<script>
+
+  let editId;
+  layui.use(['form', 'layer'], function () {
+    $ = layui.jquery;
+    form = layui.form()
+            , layer = layui.layer;
+
+
+    init();
+    form.render()
+
+    //监听提交
+    form.on('submit(save)', function (data) {
+      let commitdata = {
+        "teamName":$("#teamName").val(),
+        "level":$("#level").val(),
+        "type":$("#type").val(),
+        "coachId":$("#coach").val(),
+        "classroom":$("#classroom").val()
+      }
+
+      let result = myajax("/team/updateTeam", "post", "application/json;charset=utf-8", "json", JSON.stringify(commitdata));
+
+      if (result) {
+        layer.alert("保存成功", {icon: 6}, function () {
+          // 获得frame索引
+          var index = parent.layer.getFrameIndex(window.name);
+          //关闭当前frame
+          parent.layer.close(index);
+        });
+      }else {
+        layer.alert("保存失败", {icon: 6}, function () {
+          // 获得frame索引
+          var index = parent.layer.getFrameIndex(window.name);
+          //关闭当前frame
+          parent.layer.close(index);
+        });
+      }
+
+      return false;
+    });
+  });
+
+  function init(){
+    let param = window.location.search;
+    editId = param.substring(param.lastIndexOf("=") + 1)
+    let rolesResult = myajax("/team/findTeamById/"+editId, "get", "application/json;charset=utf-8", "json")
+    let coach = myajax("/user/findUserByUserId/"+rolesResult.coachId,"get", "application/json;charset=utf-8", "json")
+    let coaches = myajax("/user/findAllByRoleName", "get", "application/json;charset=utf-8", "json")
+
+    let ps = "";
+    for (let i = 0;i<coaches.length;i++){
+      ps += "<option value=\""+coaches[i].id+"\">"+coaches[i].username+"</option>"
+    }
+    $("#coach").html(ps)
+
+
+    $("#teamName").val(userResult.teamName)
+    $("#level").val(userResult.level)
+    $("#type").val(userResult.type)
+    $("#coach").val(coach.user.id)
+
+  }
+  // $("#roles").val()
+</script>
+
+</body>
+
+</html>
