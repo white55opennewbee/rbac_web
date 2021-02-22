@@ -100,6 +100,7 @@
         <!--                                </td>-->
         <!--                            </tr>-->
         </tbody>
+
     </table>
 
 
@@ -110,7 +111,7 @@
 <script src="js/common/myAjax.js"></script>
 <script>
     let teamId;
-    let maxSize = 5;
+    // let maxSize = 5;
     layui.use(['laydate', 'element', 'laypage', 'layer'], function () {
         $ = layui.jquery;//jquery
         laydate = layui.laydate;//日期插件
@@ -128,15 +129,7 @@
 
 
 
-        //   laypage({
-        //     cont: 'page'
-        //     ,pages: 100
-        //     ,first: 1
-        //     ,last: 100
-        //     ,prev: '<em><</em>'
-        //     ,next: '<em>></em>'
-        //   });
-        // });
+
     })
 
 
@@ -176,10 +169,10 @@
                 "                                    " + result.list[i].location + "\n" +
                 "                                </td>\n" +
                 "                                <td >\n" +
-                "                                    <select id=\"team\">\n" +
+                "                                    <select id=\"stu"+result.list[i].id+"\">\n" +
                                                         pa
                 +"                                    </select>\n" +
-                "<input type=\"button\" onclick=\"student_trans(this,"+result.list[i].id+")\" value='转小组'>" +
+                "<input type=\"button\" onclick=\"student_trans(this,"+result.list[i].id+",'stu"+result.list[i].id+"')\" value='转小组'>" +
                 "                                </td>" +
                 "                                <td>\n" +
                 "                                    " + result.list[i].createTime + "\n" +
@@ -189,18 +182,17 @@
                 "                                    <a style=\"text-decoration:none\" onclick=\"student_out(this," + result.list[i].id + ")\" href=\"javascript:;\" title=\"踢出小组\">\n" +
                 "                                        <i class=\"layui-icon\">&#xe601;</i>\n" +
                 "                                    </a>\n" +
-                "                                    <a title=\"编辑\" href=\"javascript:;\" onclick=\"student_edit('编辑','admin-edit.html'," + result.list[i].id + ",'','510')\"\n" +
+                "                                    <a title=\"编辑\" href=\"javascript:;\" onclick=\"student_edit('编辑','stu-edit.html'," + result.list[i].id + ",'','510')\"\n" +
                 "                                    class=\"ml-5\" style=\"text-decoration:none\">\n" +
                 "                                        <i class=\"layui-icon\">&#xe642;</i>\n" +
                 "                                    </a>\n" +
-                "                                    <a title=\"选为组长\" href=\"javascript:;\" onclick=\"team_toLeader(this,"+result.list[i].studentName+"+","+"+result.list[i].id+")\"\n" +
+                "                                    <a title=\"选为组长\" href=\"javascript:;\" onclick=\"team_toLeader(this,"+result.list[i].studentName+","+result.list[i].id+")\"\n" +
                 "                                    class=\"ml-5\" style=\"text-decoration:none\">\n" +
-                "                                        <i class=\"layui-icon\">&#xe642;</i>\n" +
+                "                                        <i class=\"layui-icon\">&#xe631;</i>\n" +
                 "                                    </a>\n" +
                 "                                </td>\n" +
-                "                            </tr>";
+                "                            </tr>\n";
         }
-
         $("#infoBody").html(ps);
     }
 
@@ -213,10 +205,12 @@
     }
 
     /*添加*/
-    function student_trans(obj,stuId) {
+    function student_trans(obj,stuId,selectId) {
         layer.confirm('确认要调组吗？', function (index) {
             //发异步删除数据
-            let teamId = $("#team").val();
+            console.log(selectId)
+            // let teamId = $("#"+selectId).val()
+            // console.log(teamId)
             let result = myajax("/student/moveStudentToTeam/"+stuId+"/"+teamId,"post","application/json;charset=utf-8","json");
             if (result){
                 $(obj).parents("tr").remove();
@@ -240,18 +234,29 @@
     function student_out(obj, id) {
         layer.confirm('确认要踢出吗？', function (index) {
             //发异步删除数据
-            $(obj).parents("tr").remove();
-            layer.msg('已踢出!', {icon: 1, time: 1000});
+            let res = myajax("/student/setStudentNoTeam/"+id,"put","application/json;charset=utf-8","json");
+            if (res){
+                $(obj).parents("tr").remove();
+                layer.msg('已踢出!', {icon: 1, time: 1000});
+            }else {
+                layer.msg('踢出失败!', {icon: 1, time: 1000});
+            }
+
         });
     }
     function team_toLeader(obj,stuName,id) {
         layer.confirm("确认选举"+stuName+"为组长？", function (index) {
             //发异步删除数据
-            myajax("")
+            let res = myajax("/team/setTeamLeader/"+id+"/"+teamId,"put","application/json;charset=utf-8","json");
+            if (res){
+                $(obj).parents("tr").remove();
+                layer.msg('选举成功!', {icon: 1, time: 1000});
+            }else {
+                layer.msg('选举失败!', {icon: 1, time: 1000});
+            }
 
 
-            $(obj).parents("tr").remove();
-            layer.msg('选举成功!', {icon: 1, time: 1000});
+
         });
     }
 

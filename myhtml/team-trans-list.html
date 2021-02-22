@@ -20,7 +20,7 @@
             <span class="layui-breadcrumb">
               <a><cite>首页</cite></a>
               <a><cite>小组管理</cite></a>
-              <a><cite>小组列表</cite></a>
+              <a><cite>转组记录</cite></a>
             </span>
     <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
        href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon"
@@ -37,22 +37,20 @@
 <!--                <div class="layui-input-inline">-->
 <!--                    <input type="date" class="layui-input" placeholder="截止日" id="LAY_demorange_e">-->
 <!--                </div>-->
-<!--                <div class="layui-input-inline">-->
-<!--                    <input type="text" name="username" id="username" placeholder="请输入登录名" autocomplete="off"-->
-<!--                           class="layui-input">-->
-<!--                </div>-->
-<!--                <div class="layui-input-inline" style="width:80px">-->
-<!--                    <div class="layui-btn" onclick="clickSearch()" lay-filter="sreach"><i-->
-<!--                            class="layui-icon">&#xe615;</i>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <div class="layui-input-inline">
+                    <input type="text" name="studentName" id="studentName" placeholder="请输入学生名" autocomplete="off"
+                           class="layui-input">
+                </div>
+                <div class="layui-input-inline" style="width:80px">
+                    <div class="layui-btn" onclick="clickSearch()" lay-filter="sreach"><i
+                            class="layui-icon">&#xe615;</i>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
     <xblock>
-        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
-        <button class="layui-btn" onclick="team_add('添加小组','team-add.html','600','500')"><i class="layui-icon">&#xe608;</i>添加
-        </button>
+
         <span class="x-right" style="line-height:40px"></span></xblock>
     <table class="layui-table">
         <thead>
@@ -64,29 +62,18 @@
                 ID
             </th>
             <th>
-                组名
+                学生姓名
             </th>
             <th>
-                创建时间
+                原小组
             </th>
             <th>
-                级别
+                现小组
             </th>
             <th>
-                类型
+                转组时间
             </th>
-            <th>
-                组长
-            </th>
-            <th>
-                成员数量
-            </th>
-            <th>
-                教室
-            </th>
-            <th>
-                教练
-            </th>
+
         </tr>
         </thead>
         <tbody id="infoBody">
@@ -178,22 +165,13 @@
     function search(currentPage, maxSize) {
 
         let userId = localStorage.getItem("rbac_sys_id");
-
-        let allresult = myajax("/team/findAll/"+userId+"/"+currentPage+"/"+maxSize, "get", "application/json;charset=utf-8", "json");
+        let studentName = $("#studentName").val()
+        console.log(studentName)
+        let allresult = myajax("/allocateRecord/findAllcateRecordsByStudentName/"+currentPage+"/"+maxSize+"/"+studentName, "get", "application/json;charset=utf-8", "json");
         let result = allresult.list;
         let ps = "";
         for (let i = 0; i < result.length; i++) {
-            let leader;
-            let coach
-            if (result[i].groupLeaderId == null || result[i].groupLeaderId == 0){
-                leader = "无"
-                coach = "无"
-            }else {
-                leader = myajax("/student/findStudentByUserId/"+result[i].groupLeaderId,"get","application/json;charset=utf-8","json").studentName;
-                coach = myajax("/user/findUserByUserId/"+result[i].coachId,"get","application/json;charset=utf-8","json").user.username;
-            }
-
-
+            let studentName = myajax("/student/findStudentById/"+result[i].studentId,"get", "application/json;charset=utf-8", "json");
             ps += "                    <tr>\n" +
                 "                                <td>\n" +
                 "                                    <input type=\"checkbox\" value=\"1\" name=\"\">\n" +
@@ -202,41 +180,16 @@
                 "                                    "+result[i].id+"\n" +
                 "                                </td>\n" +
                 "                                <td>\n" +
-                "                                    "+result[i].teamName+"\n" +
+                "                                    "+studentName.studentName+"\n" +
                 "                                </td>\n" +
                 "                                <td>\n" +
+                "                                    "+result[i].oldTeam+"\n" +
+                "                                </td>\n" +
+                "                                <td>\n" +
+                "                                    "+result[i].newTeam+"\n" +
+                "                                </td>\n" +
+                "                                <td >\n" +
                 "                                    "+result[i].createTime+"\n" +
-                "                                </td>\n" +
-                "                                <td>\n" +
-                "                                    "+result[i].level+"\n" +
-                "                                </td>\n" +
-                "                                <td >\n" +
-                "                                    "+result[i].type+"\n" +
-                "                                </td>\n" +
-                "                                <td >\n" +
-                "                                    "+leader+"\n" +
-                "                                </td>\n" +
-                "                                <td>\n" +
-                "                                    "+result[i].memberCounts+"\n" +
-                "                                </td>\n" +
-                "                                <td>\n" +
-                "                                    "+result[i].classroom+"\n" +
-                "                                </td>\n" +
-                "                                <td>\n" +
-                "                                    "+coach+"\n" +
-                "                                </td>\n" +
-                "                                <td class=\"td-manage\">\n" +
-                "                                    <a style=\"text-decoration:none\" onclick=\"team_stu('组内学生查看','team-stu.html',"+result[i].id+",'700','510')\" href=\"javascript:;\" title=\"查看学生\">\n" +
-                "                                        <i class=\"layui-icon\">&#xe601;</i>\n" +
-                "                                    </a>\n" +
-                "                                    <a title=\"编辑\" href=\"javascript:;\" onclick=\"team_edit('编辑','team-edit.html',"+result[i].id+",'','510')\"\n" +
-                "                                    class=\"ml-5\" style=\"text-decoration:none\">\n" +
-                "                                        <i class=\"layui-icon\">&#xe642;</i>\n" +
-                "                                    </a>\n" +
-                "                                    <a title=\"删除\" href=\"javascript:;\" onclick=\"team_del(this,"+result[i].id+")\"\n" +
-                "                                    style=\"text-decoration:none\">\n" +
-                "                                        <i class=\"layui-icon\">&#xe640;</i>\n" +
-                "                                    </a>\n" +
                 "                                </td>\n" +
                 "                            </tr>\n"
         }
@@ -267,44 +220,44 @@
 
 
 
-    //批量删除提交
-    function delAll() {
-        layer.confirm('确认要删除吗？', function (index) {
-            //捉到所有被选中的，发异步进行删除
-            layer.msg('功能待开发', {icon: 1});
-        });
-    }
-    // 查看学生
-    function team_stu(title, url, id, w, h) {
-        url = url + "?id=" + id
-        x_admin_show(title, url, w, h);
-    }
-    /*添加*/
-    function team_add(title, url, w, h) {
-        x_admin_show(title, url, w, h);
-    }
-
-
-    //编辑
-    function team_edit(title, url, id, w, h) {
-        url = url + "?id=" + id
-        x_admin_show(title, url, w, h);
-    }
-
-    /*删除*/
-    function team_del(obj, id) {
-        layer.confirm('确认要删除吗？', function (index) {
-            //发异步删除数据
-            let result = myajax("/team/deleteTeam/"+id,"delete","application/json;charset=utf-8", "json")
-            if (result){
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!', {icon: 1, time: 1000});
-            }else {
-                layer.msg('删除失败!', {icon: 1, time: 1000});
-            }
-
-        });
-    }
+    // //批量删除提交
+    // function delAll() {
+    //     layer.confirm('确认要删除吗？', function (index) {
+    //         //捉到所有被选中的，发异步进行删除
+    //         layer.msg('功能待开发', {icon: 1});
+    //     });
+    // }
+    // // 查看学生
+    // function team_stu(title, url, id, w, h) {
+    //     url = url + "?id=" + id
+    //     x_admin_show(title, url, w, h);
+    // }
+    // /*添加*/
+    // function team_add(title, url, w, h) {
+    //     x_admin_show(title, url, w, h);
+    // }
+    //
+    //
+    // //编辑
+    // function team_edit(title, url, id, w, h) {
+    //     url = url + "?id=" + id
+    //     x_admin_show(title, url, w, h);
+    // }
+    //
+    // /*删除*/
+    // function team_del(obj, id) {
+    //     layer.confirm('确认要删除吗？', function (index) {
+    //         //发异步删除数据
+    //         let result = myajax("/team/deleteTeam/"+id,"delete","application/json;charset=utf-8", "json")
+    //         if (result){
+    //             $(obj).parents("tr").remove();
+    //             layer.msg('已删除!', {icon: 1, time: 1000});
+    //         }else {
+    //             layer.msg('删除失败!', {icon: 1, time: 1000});
+    //         }
+    //
+    //     });
+    // }
 
 </script>
 </body>
