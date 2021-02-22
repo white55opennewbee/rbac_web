@@ -116,12 +116,11 @@
 
   layui.use(['form', 'layer'], function () {
     $ = layui.jquery;
-    form = layui.form()
-            , layer = layui.layer;
+    form = layui.form();
+             layer = layui.layer;
 
 
-    init();
-    form.render()
+
 
     //监听提交
     form.on('submit(save)', function (data) {
@@ -154,9 +153,10 @@
       return false;
     });
   });
+  window.onload = init()
 
   function init(){
-    let coaches = myajax("/user/findAllByRoleName", "get", "application/json;charset=utf-8", "json")
+    let coaches = myajax("/user/findAllByRoleName/教练", "get", "application/json;charset=utf-8", "json")
     let ps = "";
     for (let i = 0;i<coaches.length;i++){
       ps += "<option value=\""+coaches[i].id+"\">"+coaches[i].username+"</option>"

@@ -30,22 +30,16 @@
     <form class="layui-form x-center" action="" style="width:80%">
         <div class="layui-form-pane" style="margin-top: 15px;">
             <div class="layui-form-item">
-<!--                <label class="layui-form-label">日期范围</label>-->
-<!--                <div class="layui-input-inline">-->
-<!--                    <input type="date" class="layui-input" placeholder="开始日" id="LAY_demorange_s">-->
-<!--                </div>-->
-<!--                <div class="layui-input-inline">-->
-<!--                    <input type="date" class="layui-input" placeholder="截止日" id="LAY_demorange_e">-->
-<!--                </div>-->
-<!--                <div class="layui-input-inline">-->
-<!--                    <input type="text" name="username" id="username" placeholder="请输入登录名" autocomplete="off"-->
-<!--                           class="layui-input">-->
-<!--                </div>-->
-<!--                <div class="layui-input-inline" style="width:80px">-->
-<!--                    <div class="layui-btn" onclick="clickSearch()" lay-filter="sreach"><i-->
-<!--                            class="layui-icon">&#xe615;</i>-->
-<!--                    </div>-->
-<!--                </div>-->
+
+                                <div class="layui-input-inline">
+                                    <input type="text" name="stuName" id="stuName" placeholder="请输入学生名" autocomplete="off"
+                                           class="layui-input">
+                                </div>
+                                <div class="layui-input-inline" style="width:80px">
+                                    <div class="layui-btn" onclick="clickSearch()" lay-filter="sreach"><i
+                                            class="layui-icon">&#xe615;</i>
+                                    </div>
+                                </div>
             </div>
         </div>
     </form>
@@ -54,7 +48,7 @@
         <button class="layui-btn" onclick="team_add('添加小组','team-add.html','600','500')"><i class="layui-icon">&#xe608;</i>添加
         </button>
         <span class="x-right" style="line-height:40px"></span></xblock>
-    <table class="layui-table">
+        <table class="layui-table">
         <thead>
         <tr>
             <th>
@@ -64,78 +58,68 @@
                 ID
             </th>
             <th>
-                组名
+                学生姓名
             </th>
             <th>
-                创建时间
+                学号
             </th>
             <th>
-                级别
+                座位
             </th>
             <th>
-                类型
+                小组
             </th>
             <th>
-                组长
+                加入时间
             </th>
             <th>
-                成员数量
-            </th>
-            <th>
-                教室
-            </th>
-            <th>
-                教练
+                操作
             </th>
         </tr>
         </thead>
         <tbody id="infoBody">
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <input type="checkbox" value="1" name="">-->
-<!--                                </td>-->
-<!--                                <td>-->
-<!--                                    组id-->
-<!--                                </td>-->
-<!--                                <td>-->
-<!--                                    组名-->
-<!--                                </td>-->
-<!--                                <td>-->
-<!--                                    创建时间-->
-<!--                                </td>-->
-<!--                                <td >-->
-<!--                                    级别-->
-<!--                                </td>-->
-<!--                                <td >-->
-<!--                                    小组类型-->
-<!--                                </td>-->
-<!--                                <td >-->
-<!--                                    组长名-->
-<!--                                </td>-->
-<!--                                <td>-->
-<!--                                    成员数量-->
-<!--                                </td>-->
-<!--                                <td>-->
-<!--                                    教室-->
-<!--                                </td>-->
-<!--                                <td>-->
-<!--                                    教练-->
-<!--                                </td>-->
-
-<!--                                <td class="td-manage">-->
-<!--                                    <a style="text-decoration:none" onclick="admin_stop(this,'10001')" href="javascript:;" title="停用">-->
-<!--                                        <i class="layui-icon">&#xe601;</i>-->
-<!--                                    </a>-->
-<!--                                    <a title="编辑" href="javascript:;" onclick="admin_edit('编辑','admin-edit.html','4','','510')"-->
-<!--                                    class="ml-5" style="text-decoration:none">-->
-<!--                                        <i class="layui-icon">&#xe642;</i>-->
-<!--                                    </a>-->
-<!--                                    <a title="删除" href="javascript:;" onclick="admin_del(this,'1')"-->
-<!--                                    style="text-decoration:none">-->
-<!--                                        <i class="layui-icon">&#xe640;</i>-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                            </tr>-->
+        <!--                            <tr>-->
+        <!--                                <td>-->
+        <!--                                    <input type="checkbox" value="1" name="">-->
+        <!--                                </td>-->
+        <!--                                <td>-->
+        <!--                                    ID-->
+        <!--                                </td>-->
+        <!--                                <td>-->
+        <!--                                    学生姓名-->
+        <!--                                </td>-->
+        <!--                                <td >-->
+        <!--                                    学号-->
+        <!--                                </td>-->
+        <!--                                <td >-->
+        <!--                                    <select id="team">-->
+        <!--                                        <option>-->
+        <!--                                            -->
+        <!--                                        </option>-->
+        <!--                                    </select>-->
+        <!--                                    <a title="转小组" href="javascript:;" onclick="admin_del(this,'1')"-->
+        <!--                                       style="text-decoration:none">-->
+        <!--                                        <i class="layui-icon">&#xe640;</i>-->
+        <!--                                    </a>-->
+        <!--                                </td>-->
+        <!--                                <td >-->
+        <!--                                    加入时间-->
+        <!--                                </td>-->
+        <!--                                -->
+        <!--                                <td class="td-manage">-->
+        <!--                                    <a style="text-decoration:none" onclick="admin_stop(this,'10001')" href="javascript:;" title="踢出小组">-->
+        <!--                                        <i class="layui-icon">&#xe601;</i>-->
+        <!--                                    </a>-->
+        <!--                                    <a title="编辑" href="javascript:;" onclick="admin_edit('编辑','admin-edit.html','4','','510')"-->
+        <!--                                    class="ml-5" style="text-decoration:none">-->
+        <!--                                        <i class="layui-icon">&#xe642;</i>-->
+        <!--                                    </a>-->
+        <!--                                    <a title="转小组" href="javascript:;" onclick="admin_del(this,'1')"-->
+        <!--                                    style="text-decoration:none">-->
+        <!--                                        <i class="layui-icon">&#xe640;</i>-->
+        <!--                                    </a>-->
+        <!--                                </td>-->
+        <!--                            </tr>-->
         </tbody>
     </table>
 
@@ -183,17 +167,8 @@
         let result = allresult.list;
         let ps = "";
         for (let i = 0; i < result.length; i++) {
-            let leader;
-            let coach
-            if (result[i].groupLeaderId == null || result[i].groupLeaderId == 0){
-                leader = "无"
-                coach = "无"
-            }else {
-                leader = myajax("/student/findStudentByUserId/"+result[i].groupLeaderId,"get","application/json;charset=utf-8","json").studentName;
-                coach = myajax("/user/findUserByUserId/"+result[i].coachId,"get","application/json;charset=utf-8","json").user.username;
-            }
-
-
+            let leader = myajax("/user/findUserByUserId/"+result[i].groupLeaderId,"get","application/json;charset=utf-8","json");
+            let coach = myajax("/user/findUserByUserId/"+result[i].coachId,"get","application/json;charset=utf-8","json");
             ps += "                    <tr>\n" +
                 "                                <td>\n" +
                 "                                    <input type=\"checkbox\" value=\"1\" name=\"\">\n" +
@@ -214,7 +189,7 @@
                 "                                    "+result[i].type+"\n" +
                 "                                </td>\n" +
                 "                                <td >\n" +
-                "                                    "+leader+"\n" +
+                "                                    "+leader.user.username+"\n" +
                 "                                </td>\n" +
                 "                                <td>\n" +
                 "                                    "+result[i].memberCounts+"\n" +
@@ -223,14 +198,14 @@
                 "                                    "+result[i].classroom+"\n" +
                 "                                </td>\n" +
                 "                                <td>\n" +
-                "                                    "+coach+"\n" +
+                "                                    "+coach.user.username+"\n" +
                 "                                </td>\n" +
                 "\n" +
                 "                                <td class=\"td-manage\">\n" +
                 "                                    <a style=\"text-decoration:none\" onclick=\"team_stu('组内学生查看','team-stu.html',"+result[i].id+",'','510')\" href=\"javascript:;\" title=\"查看学生\">\n" +
                 "                                        <i class=\"layui-icon\">&#xe601;</i>\n" +
                 "                                    </a>\n" +
-                "                                    <a title=\"编辑\" href=\"javascript:;\" onclick=\"team_edit('编辑','team-edit.html',"+result[i].id+",'','510')\"\n" +
+                "                                    <a title=\"编辑\" href=\"javascript:;\" onclick=\"team_edit('编辑','team-edit.html','4','','510')\"\n" +
                 "                                    class=\"ml-5\" style=\"text-decoration:none\">\n" +
                 "                                        <i class=\"layui-icon\">&#xe642;</i>\n" +
                 "                                    </a>\n" +

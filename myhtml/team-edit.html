@@ -13,9 +13,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
   <link rel="stylesheet" href="./css/x-admin.css" media="all">
+  <script src="js/jquery.min.js"></script>
+  <script src="./lib/layui/layui.js" charset="utf-8">
+  </script>
+  <script src="./js/x-layui.js" charset="utf-8">
+  </script>
 
   <script src="js/common/myAjax.js"></script>
-  <script src="js/jquery.min.js"></script>
+
 
 </head>
 
@@ -70,21 +75,6 @@
         <span class="x-red">*</span>
       </div>
     </div>
-<!--    <div class="layui-form-item">-->
-<!--      <label for="coach" class="layui-form-label">-->
-<!--        <span class="x-red">*</span>教练-->
-<!--      </label>-->
-<!--      <div class="layui-input-inline">-->
-<!--        <select id="coach" name="coach">-->
-
-<!--        </select>-->
-<!--&lt;!&ndash;        <input type="text" id="coach" name="coach" required="" lay-verify="coach"&ndash;&gt;-->
-<!--&lt;!&ndash;               autocomplete="off" class="layui-input">&ndash;&gt;-->
-<!--      </div>-->
-<!--      <div class="layui-form-mid layui-word-aux">-->
-<!--        <span class="x-red">*</span>-->
-<!--      </div>-->
-<!--    </div>-->
 
     <div class="layui-form-item">
       <label class="layui-form-label" style="width:60px">教练</label>
@@ -108,33 +98,36 @@
     </div>
   </form>
 </div>
-<script src="./lib/layui/layui.js" charset="utf-8">
-</script>
-<script src="./js/x-layui.js" charset="utf-8">
-</script>
+
 <script>
 
   let editId;
+  let team;
   layui.use(['form', 'layer'], function () {
     $ = layui.jquery;
-    form = layui.form()
-            , layer = layui.layer;
+             layer = layui.layer;
+    form = layui.form();
 
 
-    init();
-    form.render()
+
 
     //监听提交
     form.on('submit(save)', function (data) {
-      let commitdata = {
-        "teamName":$("#teamName").val(),
-        "level":$("#level").val(),
-        "type":$("#type").val(),
-        "coachId":$("#coach").val(),
-        "classroom":$("#classroom").val()
-      }
+      // let commitdata = {
+      //   "teamName":$("#teamName").val(),
+      //   "level":$("#level").val(),
+      //   "type":$("#type").val(),
+      //   "coachId":$("#coach").val(),
+      //   "classroom":$("#classroom").val(),
+      // }
+      team.teamName = $("#teamName").val()
+      team.level = $("#level").val()
+      team.type = $("#type").val()
+      team.coachId = $("#coach").val()
+      team.classroom = $("#classroom").val()
 
-      let result = myajax("/team/updateTeam", "post", "application/json;charset=utf-8", "json", JSON.stringify(commitdata));
+
+      let result = myajax("/team/updateTeam", "post", "application/json;charset=utf-8", "json", JSON.stringify(team));
 
       if (result) {
         layer.alert("保存成功", {icon: 6}, function () {
@@ -155,13 +148,16 @@
       return false;
     });
   });
+  window.onload = init();
 
   function init(){
     let param = window.location.search;
     editId = param.substring(param.lastIndexOf("=") + 1)
-    let rolesResult = myajax("/team/findTeamById/"+editId, "get", "application/json;charset=utf-8", "json")
-    let coach = myajax("/user/findUserByUserId/"+rolesResult.coachId,"get", "application/json;charset=utf-8", "json")
-    let coaches = myajax("/user/findAllByRoleName", "get", "application/json;charset=utf-8", "json")
+    console.log(editId)
+    team = myajax("/team/findTeamById/"+editId, "get", "application/json;charset=utf-8", "json")
+    // let coach = myajax("/user/findUserByUserId/"+teamResult.coachId,"get", "application/json;charset=utf-8", "json")
+    let coaches = myajax("/user/findAllByRoleName/教练", "get", "application/json;charset=utf-8", "json")
+
 
     let ps = "";
     for (let i = 0;i<coaches.length;i++){
@@ -170,13 +166,12 @@
     $("#coach").html(ps)
 
 
-    $("#teamName").val(userResult.teamName)
-    $("#level").val(userResult.level)
-    $("#type").val(userResult.type)
-    $("#coach").val(coach.user.id)
-
+    $("#teamName").val(team.teamName)
+    $("#level").val(team.level)
+    $("#type").val(team.type)
+    $("#classroom").val(team.classroom)
+    $("#coach").val(team.coachId)
   }
-  // $("#roles").val()
 </script>
 
 </body>
