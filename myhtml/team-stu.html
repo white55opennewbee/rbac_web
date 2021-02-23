@@ -57,48 +57,48 @@
         </tr>
         </thead>
         <tbody id="infoBody">
-        <!--                            <tr>-->
-        <!--                                <td>-->
-        <!--                                    <input type="checkbox" value="1" name="">-->
-        <!--                                </td>-->
-        <!--                                <td>-->
-        <!--                                    ID-->
-        <!--                                </td>-->
-        <!--                                <td>-->
-        <!--                                    学生姓名-->
-        <!--                                </td>-->
-        <!--                                <td >-->
-        <!--                                    学号-->
-        <!--                                </td>-->
-        <!--                                <td >-->
-        <!--                                    <select id="team">-->
-        <!--                                        <option>-->
-        <!--                                            -->
-        <!--                                        </option>-->
-        <!--                                    </select>-->
-        <!--                                    <a title="转小组" href="javascript:;" onclick="admin_del(this,'1')"-->
-        <!--                                       style="text-decoration:none">-->
-        <!--                                        <i class="layui-icon">&#xe640;</i>-->
-        <!--                                    </a>-->
-        <!--                                </td>-->
-        <!--                                <td >-->
-        <!--                                    加入时间-->
-        <!--                                </td>-->
-        <!--                                -->
-        <!--                                <td class="td-manage">-->
-        <!--                                    <a style="text-decoration:none" onclick="admin_stop(this,'10001')" href="javascript:;" title="踢出小组">-->
-        <!--                                        <i class="layui-icon">&#xe601;</i>-->
-        <!--                                    </a>-->
-        <!--                                    <a title="编辑" href="javascript:;" onclick="admin_edit('编辑','admin-edit.html','4','','510')"-->
-        <!--                                    class="ml-5" style="text-decoration:none">-->
-        <!--                                        <i class="layui-icon">&#xe642;</i>-->
-        <!--                                    </a>-->
-        <!--                                    <a title="转小组" href="javascript:;" onclick="admin_del(this,'1')"-->
-        <!--                                    style="text-decoration:none">-->
-        <!--                                        <i class="layui-icon">&#xe640;</i>-->
-        <!--                                    </a>-->
-        <!--                                </td>-->
-        <!--                            </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td>-->
+<!--                                            <input type="checkbox" value="1" name="">-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            ID-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            学生姓名-->
+<!--                                        </td>-->
+<!--                                        <td >-->
+<!--                                            学号-->
+<!--                                        </td>-->
+<!--                                        <td >-->
+<!--                                            <select id="team">-->
+<!--                                                <option>-->
+<!--                                                    -->
+<!--                                                </option>-->
+<!--                                            </select>-->
+<!--                                            <a title="转小组" href="javascript:;" onclick="admin_del(this,'1')"-->
+<!--                                               style="text-decoration:none">-->
+<!--                                                <i class="layui-icon">&#xe640;</i>-->
+<!--                                            </a>-->
+<!--                                        </td>-->
+<!--                                        <td >-->
+<!--                                            加入时间-->
+<!--                                        </td>-->
+<!--                                        -->
+<!--                                        <td class="td-manage">-->
+<!--                                            <a style="text-decoration:none" onclick="admin_stop(this,'10001')" href="javascript:;" title="踢出小组">-->
+<!--                                                <i class="layui-icon">&#xe601;</i>-->
+<!--                                            </a>-->
+<!--                                            <a title="编辑" href="javascript:;" onclick="admin_edit('编辑','admin-edit.html','4','','510')"-->
+<!--                                            class="ml-5" style="text-decoration:none">-->
+<!--                                                <i class="layui-icon">&#xe642;</i>-->
+<!--                                            </a>-->
+<!--                                            <a title="转小组" href="javascript:;" onclick="admin_del(this,'1')"-->
+<!--                                            style="text-decoration:none">-->
+<!--                                                <i class="layui-icon">&#xe640;</i>-->
+<!--                                            </a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
         </tbody>
 
     </table>
@@ -160,7 +160,9 @@
                 "                                    " + result.list[i].id + "\n" +
                 "                                </td>\n" +
                 "                                <td>\n" +
-                "                                    " + result.list[i].studentName + "\n" +
+                "                                    " + "                            <u style=\"cursor:pointer\" onclick=\"student_show('"+result.list[i].studentName+"','student-show.html',"+result.list[i].id+",'360','400')\">\n" +
+                "                                " + result.list[i].studentName + "\n" +
+                "                            </u>\n" + "\n" +
                 "                                </td>\n" +
                 "                                <td >\n" +
                 "                                    " + result.list[i].studentClassNum + "\n" +
@@ -186,7 +188,7 @@
                 "                                    class=\"ml-5\" style=\"text-decoration:none\">\n" +
                 "                                        <i class=\"layui-icon\">&#xe642;</i>\n" +
                 "                                    </a>\n" +
-                "                                    <a title=\"选为组长\" href=\"javascript:;\" onclick=\"team_toLeader(this,"+result.list[i].studentName+","+result.list[i].id+")\"\n" +
+                "                                    <a title=\"选为组长\" href=\"javascript:;\" onclick=\"team_toLeader(this,'"+result.list[i].studentName+"',"+result.list[i].id+")\"\n" +
                 "                                    class=\"ml-5\" style=\"text-decoration:none\">\n" +
                 "                                        <i class=\"layui-icon\">&#xe631;</i>\n" +
                 "                                    </a>\n" +
@@ -209,8 +211,8 @@
         layer.confirm('确认要调组吗？', function (index) {
             //发异步删除数据
             console.log(selectId)
-            // let teamId = $("#"+selectId).val()
-            // console.log(teamId)
+            let teamId = $("#"+selectId).val()
+            console.log(teamId)
             let result = myajax("/student/moveStudentToTeam/"+stuId+"/"+teamId,"post","application/json;charset=utf-8","json");
             if (result){
                 $(obj).parents("tr").remove();
@@ -223,6 +225,9 @@
 
     }
 
+    function student_show(title, url, id, w, h) {
+        x_admin_show(title , url+ "?id=" + id, w, h);
+    }
 
     //编辑
     function student_edit(title, url, id, w, h) {
@@ -249,7 +254,6 @@
             //发异步删除数据
             let res = myajax("/team/setTeamLeader/"+id+"/"+teamId,"put","application/json;charset=utf-8","json");
             if (res){
-                $(obj).parents("tr").remove();
                 layer.msg('选举成功!', {icon: 1, time: 1000});
             }else {
                 layer.msg('选举失败!', {icon: 1, time: 1000});
