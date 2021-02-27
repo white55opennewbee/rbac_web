@@ -36,7 +36,7 @@ function myajax(url, method, contenttype, datatype, data) {
                 window.top.location.href = "index.html"
 
             } else {
-                alert(data)
+                alert(data.code + "," + data.message)
             }
         },
         error: function (xhr,err) {
