@@ -199,6 +199,14 @@
                 "                            class=\"ml-5\" style=\"text-decoration:none\">\n" +
                 "                                <i class=\"layui-icon\">&#xe642;</i>\n" +
                 "                            </a>\n" +
+                // "                            <a title=\"导出日报\" href=\"javascript:;\" onclick=\"daily_output(this,'" + result.list[i].id + "')\" \n" +
+                // "                            style=\"text-decoration:none\">\n" +
+                // "                                <i class=\"layui-icon\">&#xe640;</i>\n" +
+                // "                            </a>\n" +
+                "                            <a title=\"导出日报\" href=\"http://localhost:8088/daily/CreateDailyWord/"+result.list[i].id+"\"\n" +
+                "                            class=\"ml-5\" style=\"text-decoration:none\">\n" +
+                "                                <i class=\"layui-icon\">&#xe643;</i>\n" +
+                "                            </a>\n" +
                 "                            <a title=\"删除\" href=\"javascript:;\" onclick=\"daily_del(this,'" + result.list[i].id + "')\" \n" +
                 "                            style=\"text-decoration:none\">\n" +
                 "                                <i class=\"layui-icon\">&#xe640;</i>\n" +
@@ -214,6 +222,20 @@
     function student_show(title, url, id, w, h) {
         x_admin_show(title , url+ "?id=" + id, w, h);
     }
+
+    // function daily_output(obj, dailyId) {
+    //
+    //     // window.parent.location.href = "http://localhost:8088/daily/CreateDailyWord/"+dailyId
+    //
+    //
+    //     var form = document.createElement("form");
+    //     document.body.appendChild(form);
+    //
+    //     form.action = "http://localhost:8088/daily/CreateDailyWord/"+dailyId;
+    //     form.submit();
+    //
+    // }
+
 
 
 
